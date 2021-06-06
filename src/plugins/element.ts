@@ -1,5 +1,3 @@
-import lang from 'element-plus/lib/locale/lang/ja'
-import locale from 'element-plus/lib/locale'
 import {App} from 'vue'
 
 import { 
@@ -26,8 +24,7 @@ const components = [
   ElSkeletonItem
 ]
 
-export default (app: App) => {
-  locale.use(lang)
+export default (app: App): void => {
   for (const component of components) {
     app.component(component.name, component)
   }
