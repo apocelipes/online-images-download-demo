@@ -41,11 +41,19 @@
       </el-header>
       <el-main class="main">
         <p>
-			<!--since Chrome/Edge 88, Firefox 79 and Safari 12.1, target="_blank" default implicitly provides the same rel behavior as setting rel="noopener"-->
-			powered by <a href="https://v3.cn.vuejs.org/" style="color: #41b883" target="_blank" rel="noopener">vue3</a>,
-			<a href="https://element-plus.org/" style="color: #409eff" target="_blank" rel="noopener">element-plus</a> and
-			<a href="https://unsplash.com/" style="color: black" target="_blank" rel="noopener">unsplash</a>
-		</p>
+          <!--since Chrome/Edge 88, Firefox 79 and Safari 12.1, target="_blank" default implicitly provides the same rel behavior as setting rel="noopener"-->
+          powered by
+          <a href="https://v3.cn.vuejs.org/"
+             style="color: #41b883"
+             target="_blank"
+             rel="noopener">vue3</a>,
+          <a href="https://element-plus.org/"
+             style="color: #409eff"
+             target="_blank"
+             rel="noopener">element-plus</a>
+          and
+          <a href="https://unsplash.com/" style="color: black" target="_blank" rel="noopener">unsplash</a>
+        </p>
       </el-main>
     </el-container>
   </el-container>
@@ -92,7 +100,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .header {
   background-color: aqua;
   display: flex;
@@ -134,6 +142,7 @@ export default defineComponent({
   display: inline-block;
   width: 96.5px;
   height: 136.5px;
+  border-color: #999999;
 }
 
 a {

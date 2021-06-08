@@ -1,9 +1,16 @@
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, computed, Ref, ComputedRef } from 'vue'
 import { random } from 'lodash'
 import { sleep } from '@/utils/utils'
 import axios from 'axios'
 
-export default function useFetchImages(url: string) {
+export interface useFetchImagesReturnType {
+    images: string[],
+    imageSize: Ref<number>,
+    fetchFinished: ComputedRef<boolean>,
+    fetchImages(): Promise<void>
+}
+
+export default function useFetchImages(url: string): useFetchImagesReturnType {
     const images = reactive<string[]>([])
     const imageSize = ref(0)
     async function fetchImages() {

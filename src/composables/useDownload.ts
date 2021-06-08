@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { ref, Ref } from 'vue'
 import { sleep, getZipName } from '@/utils/utils'
 import JSZip from 'jszip'
 import axios from 'axios'
@@ -13,7 +13,41 @@ async function removeDuplication(arr: string[]): Promise<Set<string>> {
     return ret
 }
 
-export default function useDownload(images: string[]) {
+async function dwonloadImageWorker(imgs: Set<string>, downloadPercentage: Ref<number>): Promise<JSZip> {
+    let count = 0
+    const zip = new JSZip()
+    for (const img of imgs) {
+        const resp = await axios.get(img, {responseType: "blob"})
+        const url = new URL(img)
+        const filename = [url.pathname.replace('/', ''), url.searchParams.get('fm')].join('.')
+        zip.file(filename, resp.data, {binary: true})
+        downloadPercentage.value = ++count / imgs.size * 100
+        await sleep(500)
+    }
+
+    return zip
+}
+
+async function downloadZip(zip: JSZip): Promise<void> {
+    const zipData = await zip.generateAsync({type: "blob"})
+    const aNode = document.createElement('a')
+    aNode.download = getZipName()
+    const content = URL.createObjectURL(zipData)
+    aNode.href = content
+    const clickEvent = document.createEvent("MouseEvent")
+    clickEvent.initEvent("click", true, false)
+    aNode.dispatchEvent(clickEvent)
+    URL.revokeObjectURL(content)
+}
+
+export interface useDownloadReturnType {
+    beginDownloading: Ref<boolean>,
+    inPreparing: Ref<boolean>,
+    downloadPercentage: Ref<number>,
+    handleDownload(): Promise<void>
+}
+
+export default function useDownload(images: string[]): useDownloadReturnType {
     const beginDownloading = ref(false)
     const inPreparing = ref(false)
     const downloadPercentage = ref(0)
@@ -25,27 +59,8 @@ export default function useDownload(images: string[]) {
         inPreparing.value = false
         downloadPercentage.value = 0
 
-        let count = 0
-        const zip = new JSZip()
-        for (const img of imgs) {
-            const resp = await axios.get(img, {responseType: "blob"})
-            const url = new URL(img)
-            const filename = [url.pathname.replace('/', ''), url.searchParams.get('fm')].join('.')
-            zip.file(filename, resp.data, {binary: true})
-            downloadPercentage.value = ++count / imgs.size * 100
-            await sleep(500)
-        }
-
-        const zipData = await zip.generateAsync({type: "blob"})
-        const aNode = document.createElement('a')
-        aNode.download = getZipName()
-        const content = URL.createObjectURL(zipData)
-        aNode.href = content
-        const clickEvent = document.createEvent("MouseEvent")
-        clickEvent.initEvent("click", true, false)
-        aNode.dispatchEvent(clickEvent)
+        await downloadZip(await dwonloadImageWorker(imgs, downloadPercentage))
         beginDownloading.value = false
-        URL.revokeObjectURL(content)
     }
 
     return {
