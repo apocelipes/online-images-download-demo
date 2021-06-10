@@ -1,6 +1,5 @@
 import { ref, reactive, computed, Ref, ComputedRef } from 'vue'
-import { random } from 'lodash'
-import { sleep } from '@/utils/utils'
+import { sleep, random } from '@/utils/utils'
 import axios from 'axios'
 
 export interface useFetchImagesReturnType {
