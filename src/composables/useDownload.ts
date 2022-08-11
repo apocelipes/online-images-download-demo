@@ -13,7 +13,7 @@ async function removeDuplication(arr: string[]): Promise<Set<string>> {
     return ret
 }
 
-async function dwonloadImageWorker(imgs: Set<string>, downloadPercentage: Ref<number>): Promise<JSZip> {
+async function downloadImageWorker(imgs: Set<string>, downloadPercentage: Ref<number>): Promise<JSZip> {
     let count = 0
     const zip = new JSZip()
     for (const img of imgs) {
@@ -34,8 +34,11 @@ async function downloadZip(zip: JSZip): Promise<void> {
     aNode.download = getZipName()
     const content = URL.createObjectURL(zipData)
     aNode.href = content
-    const clickEvent = document.createEvent("MouseEvent")
-    clickEvent.initEvent("click", true, false)
+    const clickEvent = new MouseEvent("click", {
+        view: window,
+        bubbles: true,
+        cancelable: true,
+    })
     aNode.dispatchEvent(clickEvent)
     URL.revokeObjectURL(content)
 }
@@ -59,7 +62,7 @@ export default function useDownload(images: string[]): useDownloadReturnType {
         inPreparing.value = false
         downloadPercentage.value = 0
 
-        await downloadZip(await dwonloadImageWorker(imgs, downloadPercentage))
+        await downloadZip(await downloadImageWorker(imgs, downloadPercentage))
         beginDownloading.value = false
     }
 
