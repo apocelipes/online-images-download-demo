@@ -1,5 +1,5 @@
 <template>
-  <el-container style="border: 2px solid black; margin: 0px auto; width: 700px;padding: 15px;">
+  <el-container style="border: 2px solid black; margin: 0 auto; width: 700px;padding: 15px;">
     <el-aside width="190px">
       <el-skeleton :loading="!images.length" animated>
         <template #template>
@@ -60,7 +60,7 @@
 
   <div class="img-container">
     <div v-for="(url, index) of images" :key="index">
-      <img class="img-item" :src="url" loading="lazy" width="96.5" height="136.5"/>
+      <img class="img-item" :src="url" loading="lazy" width="96.5" height="136.5" alt="wallpapers"/>
     </div>
     <div class="img-item img-skeleton" v-if="!fetchFinished">
       <el-skeleton animated style="display: inline-block;padding: 0">
