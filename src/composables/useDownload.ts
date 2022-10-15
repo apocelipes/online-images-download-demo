@@ -3,7 +3,7 @@ import { sleep, getZipName } from '@/utils/utils'
 import JSZip from 'jszip'
 import axios from 'axios'
 
-async function removeDuplication(arr: string[]): Promise<Set<string>> {
+async function removeDuplication(arr: string[]) {
     const ret: Set<string> = new Set()
     for (const elem of arr) {
         ret.add(elem)
@@ -13,11 +13,11 @@ async function removeDuplication(arr: string[]): Promise<Set<string>> {
     return ret
 }
 
-async function downloadImageWorker(imgs: Set<string>, downloadPercentage: Ref<number>): Promise<JSZip> {
+async function downloadImageWorker(imgs: Set<string>, downloadPercentage: Ref<number>) {
     let count = 0
     const zip = new JSZip()
     for (const img of imgs) {
-        const resp = await axios.get(img, {responseType: "blob"})
+        const resp = await axios.get<Blob>(img, {responseType: "blob"})
         const url = new URL(img)
         const filename = [url.pathname.replace('/', ''), url.searchParams.get('fm')].join('.')
         zip.file(filename, resp.data, {binary: true})
@@ -28,7 +28,7 @@ async function downloadImageWorker(imgs: Set<string>, downloadPercentage: Ref<nu
     return zip
 }
 
-async function downloadZip(zip: JSZip): Promise<void> {
+async function downloadZip(zip: JSZip) {
     const zipData = await zip.generateAsync({type: "blob"})
     const aNode = document.createElement('a')
     aNode.download = getZipName()
